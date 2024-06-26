@@ -142,6 +142,27 @@ class KnxTunnellingRequest(KnxMessage):
         self.cemi_frame = cemi
         self.pack_knx_message()
 
+    def apci_property_value_write(self, sequence=0, object_index=0, property_id=0x0f,
+                                  num_elements=1, start_index=1, value=b'\x00'):
+        """A_Memory_Write"""
+        cemi = CemiFrame()
+        cemi = cemi.pack()
+        data = bytearray(struct.pack('!B', object_index))  # object index
+        data.extend(struct.pack('!B', property_id))  # property id
+        count_index = num_elements << 12
+        count_index |= start_index << 0
+
+        data.extend(struct.pack('!{}s'.format(len(data)), value))
+        data_request = ExtendedDataRequest(knx_source=self.knx_source,
+                                           knx_destination=self.knx_destination,
+                                           tpci_type='NDP',
+                                           tpci_sequence=sequence,
+                                           apci_type='A_PropertyValue_Write',
+                                           data=data)
+        cemi.extend(data_request.pack())
+        self.cemi_frame = cemi
+        self.pack_knx_message()
+
     def apci_property_description_read(self, sequence=0, object_index=0, property_id=0x0f,
                                        num_elements=1, start_index=1):
         cemi = CemiFrame()
