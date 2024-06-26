@@ -5,6 +5,7 @@ import functools
 import logging
 import socket
 import struct
+import sys
 import time
 
 try:
@@ -257,9 +258,14 @@ class KnxMap(object):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.setblocking(0)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE,
-                            struct.pack('256s', str.encode(self.iface)))
+
+            if sys.platform == "win32":
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                sock.bind((self.iface, 3671))
+            else:
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE,
+                                struct.pack('256s', str.encode(self.iface)))
             protocol = KnxGatewaySearch(multicast_addr=self.multicast_addr,
                                         port=self.port)
             waiter = asyncio.Future(loop=self.loop)
@@ -693,9 +699,13 @@ class KnxMap(object):
                     gateway=knx_gateway.host))
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.setblocking(0)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE,
-                            struct.pack('256s', str.encode(self.iface)))
+            if sys.platform == "win32":
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                sock.bind((self.iface, 3671))
+            else:
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE,
+                                struct.pack('256s', str.encode(self.iface)))
             # TODO: what if we have devices that access more advanced payloads?
             if isinstance(value, str):
                 value = int(value)
