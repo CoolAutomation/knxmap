@@ -494,6 +494,25 @@ class KnxTunnelConnection(asyncio.DatagramProtocol):
         else:
             return False
 
+    def apci_property_value_write(self, target, object_index=0, property_id=0x0f,
+                                  num_elements=1, start_index=1, data='00'):
+        tunnel_request = self.make_tunnel_request(target)
+        tunnel_request.apci_property_value_write(
+            sequence=self.tpci_seq_counts.get(target),
+            object_index=object_index,
+            property_id=property_id,
+            num_elements=num_elements,
+            start_index=start_index,
+            value=data)
+        LOGGER.trace_outgoing(tunnel_request)
+        value = yield from self.send_data(tunnel_request.get_message(), target)
+        yield from self.tpci_send_ncd(target)
+        if isinstance(value, KnxTunnellingRequest) and \
+                value.cemi.data:
+            return value.cemi.data[2:]
+        else:
+            return False
+
     @asyncio.coroutine
     def apci_property_description_read(self, target, object_index=0, property_id=0x0f,
                                        num_elements=1, start_index=1):
