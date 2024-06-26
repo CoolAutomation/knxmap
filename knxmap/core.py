@@ -294,7 +294,7 @@ class KnxMap(object):
                     peer = response[0]
                     response = response[1]
                     t = KnxTargetReport(
-                        host=peer[0],
+                        host=response.hpai.get('ip_address'),
                         port=peer[1],
                         mac_address=response.dib_dev_info.get('knx_mac_address'),
                         knx_address=response.dib_dev_info.get('knx_address'),
