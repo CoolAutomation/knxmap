@@ -200,9 +200,10 @@ def main():
             if not args.iface:
                 LOGGER.error('--search option requires -i/--interface argument')
                 sys.exit(1)
-            if os.geteuid() != 0:
-                LOGGER.error('-i/--interface option requires superuser privileges')
-                sys.exit(1)
+            if sys.platform == "linux":
+                if os.geteuid() != 0:
+                    LOGGER.error('-i/--interface option requires superuser privileges')
+                    sys.exit(1)
             loop.run_until_complete(knxmap.search(
                 search_timeout=args.search_timeout,
                 iface=args.iface,
