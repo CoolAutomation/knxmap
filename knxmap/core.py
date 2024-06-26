@@ -48,7 +48,7 @@ class KnxMap(object):
         # (0 means use as much as a device supports)
         self.max_connections = max_connections
         # q contains all KNXnet/IP gateways
-        self.q = Queue(loop=self.loop)
+        self.q = Queue()
         # bus_queues is a dict containing a bus queue for each KNXnet/IP gateway
         self.bus_queues = {}
         # bus_protocols is a list of all bus protocol instances for proper connection shutdown
@@ -87,7 +87,7 @@ class KnxMap(object):
         self.q.put_nowait(target)
 
     def add_bus_queue(self, gateway, bus_targets):
-        self.bus_queues[gateway] = Queue(loop=self.loop)
+        self.bus_queues[gateway] = Queue()
         for target in bus_targets:
             self.bus_queues[gateway].put_nowait(target)
         return self.bus_queues[gateway]
