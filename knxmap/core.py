@@ -315,8 +315,8 @@ class KnxMap(object):
                         bus_devices=[])
 
                     self.knx_gateways.append(t)
-        except asyncio.CancelledError:
-            pass
+        except asyncio.CancelledError as e:
+            LOGGER.exception(e)
 
     @asyncio.coroutine
     def _search_gateways(self):
