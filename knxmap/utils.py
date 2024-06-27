@@ -2,6 +2,9 @@ import json
 import socket
 import collections
 
+from knxmap.data.manufacturers import manufacturers
+
+
 def parse_knx_address(address):
     """Parse physical/individual KNX address.
 
@@ -90,11 +93,9 @@ def unpack_ip_address(address):
 
 def get_manufacturer_by_id(mid):
     assert isinstance(mid, int)
-    with open('knxmap/data/manufacturers.json', 'rb') as f:
-        m = json.load(f)
-        for _m in m.get('manufacturers'):
-            if int(_m.get('knx_manufacturer_id')) == mid:
-                return _m.get('name')
+    for manufacturer in manufacturers:
+        if manufacturer['knx_manufacturer_id'] == mid:
+            return manufacturer['name']
 
 
 def make_runstate_printable(runstate):

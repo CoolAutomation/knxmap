@@ -1,5 +1,4 @@
-{
-"manufacturers": [
+manufacturers = [
   {
     "id": "M-0001",
     "knx_manufacturer_id": "1",
@@ -1793,4 +1792,3 @@
     "import_restriction": "Own"
   }
 ]
-}
