@@ -290,8 +290,6 @@ class KnxMap(object):
 
             if protocol.responses:
                 if True:
-                    # TODO: check if we want diagnostic requests as well
-                    print('sending diagnostic request')
                     protocol.send_diagnostic_request()
                     yield from asyncio.sleep(self.search_timeout)
 
