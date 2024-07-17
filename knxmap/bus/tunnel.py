@@ -494,6 +494,7 @@ class KnxTunnelConnection(asyncio.DatagramProtocol):
         else:
             return False
 
+    @asyncio.coroutine
     def apci_property_value_write(self, target, object_index=0, property_id=0x0f,
                                   num_elements=1, start_index=1, data='00'):
         tunnel_request = self.make_tunnel_request(target)
